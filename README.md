@@ -14,6 +14,30 @@ The current version supports [libFuzzer](http://libFuzzer.info) and
 [AFL](http://lcamtuf.coredump.cx/afl/).  In future versions we may support
 other fuzzing engines.
 
+# Usage
+
+To compile a project defined in this suite try the following example:
+
+```bash
+cd ~
+git clone https://github.com/google/fuzzer-test-suite
+cd ~
+git clone https://github.com/AFLplusplus/AFLplusplus
+mkdir clean_aflplusplus
+mv aflplusplus clean_aflplusplus
+cd clean_aflplusplus/aflplusplus
+make && make llvm
+cd ~
+mkdir benchmark
+cd benchmark
+AFL_SRC=~/clean_aflplusplus/aflplusplus FUZZING_ENGINE=afl ~/fuzzer-test-suite/build-and-test.sh c-ares-CVE-2016-5180
+# In a separate terminal:
+cd clean_aflplusplus/aflplusplus
+mkdir input output
+echo "z" > input/z
+./afl-fuzz -i input -o output -- ~/benchmark/RUNDIR-c-ares-CVE-2016-5180/c-ares-CVE-2016-5180-afl
+```
+
 # See also
 
 * [AddressSanitizer](http://clang.llvm.org/docs/AddressSanitizer.html)
