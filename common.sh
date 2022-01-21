@@ -24,8 +24,8 @@ CORPUS=CORPUS-$EXECUTABLE_NAME_BASE
 JOBS=${JOBS:-"8"}
 
 
-export CC=${CC:-"clang"}
-export CXX=${CXX:-"clang++"}
+export CC=${CC:-"clang -m32"}
+export CXX=${CXX:-"clang++ -m32"}
 export CPPFLAGS=${CPPFLAGS:-"-DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION"}
 export LIB_FUZZING_ENGINE="libFuzzingEngine-${FUZZING_ENGINE}.a"
 
@@ -66,9 +66,8 @@ get_svn_revision() {
 }
 
 build_afl() {
-  $CC $CFLAGS -c -w $AFL_SRC/llvm_mode/afl-llvm-rt.o.c
-  $CXX $CXXFLAGS -std=c++11 -O2 -c ${LIBFUZZER_SRC}/afl/afl_driver.cpp -I$LIBFUZZER_SRC
-  ar r $LIB_FUZZING_ENGINE afl_driver.o afl-llvm-rt.o.o
+  $CC $CFLAGS -m32 -O3 -funroll-loops -g -fPIC -c $AFL_SRC/utils/aflpp_driver/aflpp_driver.c -I$AFL_SRC/include
+  ar rc $LIB_FUZZING_ENGINE aflpp_driver.o
   rm *.o
 }
 
